@@ -1,0 +1,92 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:CollectionManager.ViewModels"
+             x:Class="CollectionManager.Views.CollectionPage"
+             Title="{Binding CollectionName}">
+    <ContentPage.BindingContext>
+        <viewmodel:CollectionViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="15">
+            <Label Text="Dodaj nowy element"
+                   FontSize="Subtitle"
+                   FontAttributes="Bold"
+                   TextColor="#512BD4" />
+
+            <Entry Placeholder="Nazwa"
+                   Text="{Binding NewItemName}" />
+
+            <Entry Placeholder="Cena (zł)"
+                   Keyboard="Numeric" />
+
+            <Label Text="Status" />
+            <Picker ItemsSource="{Binding StatusOptions}"
+                    SelectedItem="{Binding NewItemStatus}" />
+
+            <Entry Placeholder="Zadowolenie (1-10)"
+                   Keyboard="Numeric" />
+
+            <Entry Placeholder="Komentarz"
+                   Text="{Binding NewItemComment}"
+                   HeightRequest="80" />
+
+            <Button Text="Dodaj element"
+                    Command="{Binding AddItemCommand}"
+                    TextColor="White"
+                    BackgroundColor="#512BD4"
+                    CornerRadius="5"
+                    Padding="10,5"
+                    FontSize="16" />
+
+            <Label Text="Elementy kolekcji"
+                   FontSize="Subtitle"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,0"
+                   TextColor="#512BD4" />
+
+            <CollectionView ItemsSource="{Binding Items}"
+                            EmptyView="Brak elementów w kolekcji.">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10"
+                            ColumnDefinitions="*,Auto">
+                            <Frame Grid.Column="0"
+                                   BackgroundColor="#512BD4"
+                                   Padding="15"
+                                   Margin="0,5"
+                                   CornerRadius="5"
+                                   HasShadow="True">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="{Binding Name}"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource TextColor}" />
+                                    <Label Text="{Binding Price, StringFormat='{0:C2} zł'}"
+                                           FontSize="16"
+                                           TextColor="White" />
+                                    <Label Text="{Binding Status}"
+                                           FontSize="14"
+                                           TextColor="White" />
+                                    <Label Text="{Binding Satisfaction, StringFormat='Zadowolenie: {0}/10'}"
+                                           FontSize="14"
+                                           TextColor="White" />
+                                    <Label Text="{Binding Comment}"
+                                           FontSize="12"
+                                           TextColor="DarkGray"/>
+                                    <Button Grid.Column="1"
+                                            Text="Usuń"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CollectionViewModel}}, Path=DeleteItemCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource ButtonStyle}"
+                                            Margin="5,0,0,0"
+                                            VerticalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate> 
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

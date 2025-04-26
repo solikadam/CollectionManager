@@ -1,0 +1,48 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:CollectionManager.ViewModels"
+             x:Class="CollectionManager.Views.MainPage"
+             Title="Moje Kolekcje">
+
+    <ContentPage.BindingContext>
+        <viewmodel:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20">
+        <HorizontalStackLayout Spacing="10">
+            <Entry Placeholder="Nazwa nowej kolekcji"
+                   Text="{Binding NewCollectionName}"
+                   HorizontalOptions="FillAndExpand" />
+            <Button Text="Dodaj"
+                    Command="{Binding AddNewCollectionCommand}" />
+        </HorizontalStackLayout>
+
+        <CollectionView ItemsSource="{Binding Collections}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10"
+                          ColumnDefinitions="*,Auto,Auto">
+                        <Label Grid.Column="0"
+                               Text="{Binding Name}"
+                               FontSize="18"
+                               VerticalOptions="Center" />
+                        <Button Grid.Column="1"
+                                Text="Otwórz"
+                                HorizontalOptions="End"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=NavigateToCollectionCommand}"
+                                CommandParameter="{Binding .}"
+                                VerticalOptions="Center"
+                                Margin="0,0,5,0" />
+                        <Button Grid.Column="2"
+                                Text="Usuń"
+                                HorizontalOptions="End"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=DeleteCollectionCommand}"
+                                CommandParameter="{Binding .}"
+                                VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+
+</ContentPage>

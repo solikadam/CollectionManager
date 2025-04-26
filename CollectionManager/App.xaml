@@ -1,0 +1,40 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CollectionManager"
+             x:Class="CollectionManager.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="Primary">#512BD4</Color>
+            <Color x:Key="Accent">#00BFFF</Color>
+            <Color x:Key="TextColor">#FFF</Color>
+            <Color x:Key="ButtonBackground">#512BD4</Color>
+            <Color x:Key="ButtonTextColor">White</Color>
+
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="{StaticResource ButtonTextColor}" />
+                <Setter Property="BackgroundColor" Value="{StaticResource ButtonBackground}" />
+                <Setter Property="CornerRadius" Value="5" />
+            </Style>
+
+            <Style TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{DynamicResource Accent}" />
+                <Setter Property="BorderColor" Value="{DynamicResource Secondary}" />
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="{DynamicResource Light}" />
+                <Setter Property="TextColor" Value="{DynamicResource Dark}" />
+            </Style>
+
+            <Style TargetType="Picker">
+                <Setter Property="BackgroundColor" Value="{DynamicResource Light}" />
+                <Setter Property="TextColor" Value="{DynamicResource Dark}" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
