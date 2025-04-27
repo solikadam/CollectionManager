@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:CollectionManager"
+             xmlns:convert="clr-namespace:CollectionManager.Converters"
              x:Class="CollectionManager.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -35,6 +36,10 @@
                 <Setter Property="BackgroundColor" Value="{DynamicResource Light}" />
                 <Setter Property="TextColor" Value="{DynamicResource Dark}" />
             </Style>
+
+            <convert:SoldItemColorConverter x:Key="SoldItemColorConverter" />
+            <convert:SoldItemOpacityConverter x:Key="SoldItemOpacityConverter" />
+            <convert:InverseBoolConverter x:Key="InverseBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -28,14 +28,14 @@ namespace CollectionManager.ViewModels
                 else
                 {
                     Application.Current.MainPage.DisplayAlert("Błąd", "Zadowolenie musi być w zakresie od 0 do 10.", "OK");
-                    OnPropertyChanged(nameof(NewItemSatisfaction)); 
+                    OnPropertyChanged(nameof(NewItemSatisfaction));
                 }
             }
         }
         private string _newItemComment;
         private string _collectionName;
         private Collection _currentCollection;
-        public List<string> StatusOptions { get; } = new List<string> { "nowy", "używany" };
+        public List<string> StatusOptions { get; } = new List<string> { "nowy", "używany", "na sprzedaż" }; // Dodano status "na sprzedaż"
 
         public ObservableCollection<CollectionItem> Items
         {
@@ -100,16 +100,20 @@ namespace CollectionManager.ViewModels
 
         public Command AddItemCommand { get; }
         public Command<CollectionItem> DeleteItemCommand { get; }
+        public Command<CollectionItem> MarkAsSoldCommand { get; } // Nowa komenda
+        public Command ShowSummaryCommand { get; } // Nowa komenda
 
         public CollectionViewModel()
         {
             _dataService = new DataService();
             AddItemCommand = new Command(AddItem);
             DeleteItemCommand = new Command<CollectionItem>(DeleteItem);
+            MarkAsSoldCommand = new Command<CollectionItem>(MarkAsSold); // Inicjalizacja nowej komendy
+            ShowSummaryCommand = new Command(ShowSummary); // Inicjalizacja nowej komendy
             Items = new ObservableCollection<CollectionItem>();
             _newItemPrice = 0;
             _newItemSatisfaction = 5;
-            _newItemStatus = StatusOptions.First(); 
+            _newItemStatus = StatusOptions.First();
         }
 
         private void LoadCollectionItems()
@@ -120,7 +124,8 @@ namespace CollectionManager.ViewModels
                 _currentCollection = allCollections.FirstOrDefault(c => c.Name == CollectionName);
                 if (_currentCollection != null)
                 {
-                    Items = new ObservableCollection<CollectionItem>(_currentCollection.Items);
+                    // Sortowanie: najpierw niesprzedane, potem sprzedane
+                    Items = new ObservableCollection<CollectionItem>(_currentCollection.Items.OrderBy(item => item.IsSold));
                 }
                 else
                 {
@@ -143,7 +148,7 @@ namespace CollectionManager.ViewModels
 
                     if (!result)
                     {
-                        return; 
+                        return;
                     }
                 }
 
@@ -153,19 +158,20 @@ namespace CollectionManager.ViewModels
                     Price = NewItemPrice,
                     Status = NewItemStatus,
                     Satisfaction = NewItemSatisfaction,
-                    Comment = NewItemComment
+                    Comment = NewItemComment,
+                    IsSold = false // Domyślnie nowy element nie jest sprzedany
                 };
                 _currentCollection.Items.Add(newItem);
                 Items.Add(newItem);
                 _dataService.SaveCollection(_currentCollection);
                 NewItemName = string.Empty;
                 NewItemPrice = 0;
-                NewItemStatus = StatusOptions.First(); 
+                NewItemStatus = StatusOptions.First();
                 NewItemSatisfaction = 5;
                 NewItemComment = string.Empty;
             }
         }
-    
+
 
         private void DeleteItem(CollectionItem item)
         {
@@ -174,6 +180,35 @@ namespace CollectionManager.ViewModels
                 _currentCollection.Items.Remove(item);
                 Items.Remove(item);
                 _dataService.SaveCollection(_currentCollection);
+            }
+        }
+
+        private void MarkAsSold(CollectionItem item)
+        {
+            if (_currentCollection != null && _currentCollection.Items.Contains(item))
+            {
+                item.IsSold = true;
+                _dataService.SaveCollection(_currentCollection);
+                // Przenieś element na koniec listy
+                Items.Remove(item);
+                Items.Add(item);
+            }
+        }
+
+        private async void ShowSummary()
+        {
+            if (_currentCollection != null)
+            {
+                int totalItems = _currentCollection.Items.Count;
+                int soldItems = _currentCollection.Items.Count(item => item.IsSold);
+                int forSaleItems = _currentCollection.Items.Count(item => item.Status?.ToLower() == "na sprzedaż" && !item.IsSold);
+
+                await Application.Current.MainPage.DisplayAlert(
+                    "Podsumowanie kolekcji",
+                    $"Ilość przedmiotów: {totalItems}\n" +
+                    $"Przedmioty sprzedane: {soldItems}\n" +
+                    $"Przedmioty na sprzedaż: {forSaleItems}",
+                    "OK");
             }
         }
 

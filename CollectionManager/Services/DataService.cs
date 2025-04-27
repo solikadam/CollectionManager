@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.IO;
 using System.Text.RegularExpressions;
 using CollectionManager.Models;
-using System.Linq;
 
 public class DataService
 {
@@ -47,7 +45,28 @@ public class DataService
                         if (!string.IsNullOrWhiteSpace(line))
                         {
                             var parts = line.Split(ItemDataSeparator);
-                            if (parts.Length >= 5)
+                            if (parts.Length >= 6) 
+                            {
+                                if (decimal.TryParse(parts[1], out var price) &&
+                                    int.TryParse(parts[3], out var satisfaction) &&
+                                    bool.TryParse(parts[5], out var isSold)) 
+                                {
+                                    collection.Items.Add(new CollectionItem
+                                    {
+                                        Name = parts[0].Trim(),
+                                        Price = price,
+                                        Status = parts[2]?.Trim(),
+                                        Satisfaction = satisfaction,
+                                        Comment = parts[4]?.Trim(),
+                                        IsSold = isSold 
+                                    });
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Błąd parsowania ceny, satysfakcji lub statusu sprzedaży w linii: {line}");
+                                }
+                            }
+                            else if (parts.Length >= 5) 
                             {
                                 if (decimal.TryParse(parts[1], out var price) && int.TryParse(parts[3], out var satisfaction))
                                 {
@@ -57,19 +76,18 @@ public class DataService
                                         Price = price,
                                         Status = parts[2]?.Trim(),
                                         Satisfaction = satisfaction,
-                                        Comment = parts[4]?.Trim()
+                                        Comment = parts[4]?.Trim(),
+                                        IsSold = false 
                                     });
                                 }
                                 else
                                 {
-                                    System.Diagnostics.Debug.WriteLine($"Błąd parsowania ceny lub satysfakcji w linii: {line}");
-                                    // Możesz tutaj dodać logikę obsługi błędnych linii
+                                    System.Diagnostics.Debug.WriteLine($"Błąd parsowania ceny lub satysfakcji w linii (stary format): {line}");
                                 }
                             }
                             else if (parts.Length == 1)
                             {
-                                // Obsługa starych plików bez dodatkowych danych
-                                collection.Items.Add(new CollectionItem { Name = parts[0].Trim() });
+                                collection.Items.Add(new CollectionItem { Name = parts[0].Trim(), IsSold = false });
                             }
                             else
                             {
@@ -116,7 +134,7 @@ public class DataService
         {
             var linesToSave = collection.Items
                 .Where(item => !string.IsNullOrWhiteSpace(item?.Name))
-                .Select(item => $"{item.Name.Trim()}{ItemDataSeparator}{item.Price}{ItemDataSeparator}{item.Status?.Trim()}{ItemDataSeparator}{item.Satisfaction}{ItemDataSeparator}{item.Comment?.Trim()}")
+                .Select(item => $"{item.Name.Trim()}{ItemDataSeparator}{item.Price}{ItemDataSeparator}{item.Status?.Trim()}{ItemDataSeparator}{item.Satisfaction}{ItemDataSeparator}{item.Comment?.Trim()}{ItemDataSeparator}{item.IsSold}") // Dodano zapis IsSold
                 .ToList();
             File.WriteAllLines(filePath, linesToSave);
         }
