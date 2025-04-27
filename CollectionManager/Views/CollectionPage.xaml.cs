@@ -1,3 +1,5 @@
+using Microsoft.Maui.Controls;
+
 namespace CollectionManager.Views
 {
     public partial class CollectionPage : ContentPage
@@ -6,5 +8,6 @@ namespace CollectionManager.Views
         {
             InitializeComponent();
         }
+
     }
 }

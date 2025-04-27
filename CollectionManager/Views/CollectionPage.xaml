@@ -18,14 +18,16 @@
                    Text="{Binding NewItemName}" />
 
             <Entry Placeholder="Cena (zł)"
-                   Keyboard="Numeric" />
+                   Keyboard="Numeric"
+                   Text="{Binding NewItemPrice, StringFormat='{0:N2}'}" />  
 
             <Label Text="Status" />
             <Picker ItemsSource="{Binding StatusOptions}"
                     SelectedItem="{Binding NewItemStatus}" />
 
             <Entry Placeholder="Zadowolenie (1-10)"
-                   Keyboard="Numeric" />
+                   Keyboard="Numeric"
+                   Text="{Binding NewItemSatisfaction, Mode=TwoWay, StringFormat='{0}'}"/>
 
             <Entry Placeholder="Komentarz"
                    Text="{Binding NewItemComment}"
@@ -62,7 +64,7 @@
                                            FontSize="20"
                                            FontAttributes="Bold"
                                            TextColor="{StaticResource TextColor}" />
-                                    <Label Text="{Binding Price, StringFormat='{0:C2} zł'}"
+                                    <Label Text="{Binding Price, StringFormat='{0:C2}'}"
                                            FontSize="16"
                                            TextColor="White" />
                                     <Label Text="{Binding Status}"

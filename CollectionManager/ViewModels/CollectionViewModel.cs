@@ -15,6 +15,23 @@ namespace CollectionManager.ViewModels
         private decimal _newItemPrice;
         private string _newItemStatus; // Zmieniono typ na string
         private int _newItemSatisfaction;
+        public int NewItemSatisfaction
+        {
+            get => _newItemSatisfaction;
+            set
+            {
+                if (value >= 0 && value <= 10)
+                {
+                    _newItemSatisfaction = value;
+                    OnPropertyChanged();
+                }
+                else
+                {
+                    Application.Current.MainPage.DisplayAlert("Błąd", "Zadowolenie musi być w zakresie od 0 do 10.", "OK");
+                    OnPropertyChanged(nameof(NewItemSatisfaction)); 
+                }
+            }
+        }
         private string _newItemComment;
         private string _collectionName;
         private Collection _currentCollection;
@@ -56,16 +73,6 @@ namespace CollectionManager.ViewModels
             set
             {
                 _newItemStatus = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int NewItemSatisfaction
-        {
-            get => _newItemSatisfaction;
-            set
-            {
-                _newItemSatisfaction = value;
                 OnPropertyChanged();
             }
         }
@@ -122,10 +129,24 @@ namespace CollectionManager.ViewModels
             }
         }
 
-        private void AddItem()
+        private async void AddItem()
         {
             if (!string.IsNullOrWhiteSpace(NewItemName) && _currentCollection != null)
             {
+                if (_currentCollection.Items.Any(item => item.Name.ToLower() == NewItemName.ToLower()))
+                {
+                    bool result = await Application.Current.MainPage.DisplayAlert(
+                        "Duplikat elementu",
+                        $"Element o nazwie '{NewItemName}' już istnieje w kolekcji. Czy chcesz go dodać ponownie?",
+                        "Tak",
+                        "Nie");
+
+                    if (!result)
+                    {
+                        return; 
+                    }
+                }
+
                 var newItem = new CollectionItem
                 {
                     Name = NewItemName,
@@ -139,11 +160,12 @@ namespace CollectionManager.ViewModels
                 _dataService.SaveCollection(_currentCollection);
                 NewItemName = string.Empty;
                 NewItemPrice = 0;
-                NewItemStatus = "nowy"; // Reset do domyślnej wartości
+                NewItemStatus = StatusOptions.First(); 
                 NewItemSatisfaction = 5;
                 NewItemComment = string.Empty;
             }
         }
+    
 
         private void DeleteItem(CollectionItem item)
         {
