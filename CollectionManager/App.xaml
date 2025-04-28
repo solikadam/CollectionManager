@@ -40,6 +40,7 @@
             <convert:SoldItemColorConverter x:Key="SoldItemColorConverter" />
             <convert:SoldItemOpacityConverter x:Key="SoldItemOpacityConverter" />
             <convert:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <convert:BoolToStringConverter x:Key="BoolToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

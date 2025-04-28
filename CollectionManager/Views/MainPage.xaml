@@ -15,27 +15,33 @@
                    HorizontalOptions="FillAndExpand" />
             <Button Text="Dodaj"
                     Command="{Binding AddNewCollectionCommand}" />
+            <Button Text="Importuj"
+                    Command="{Binding ImportCollectionCommand}" />
         </HorizontalStackLayout>
 
         <CollectionView ItemsSource="{Binding Collections}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10"
-                          ColumnDefinitions="*,Auto,Auto">
+                          ColumnDefinitions="*,Auto,Auto,Auto,Auto">
                         <Label Grid.Column="0"
                                Text="{Binding Name}"
                                FontSize="18"
                                VerticalOptions="Center" />
                         <Button Grid.Column="1"
                                 Text="Otwórz"
-                                HorizontalOptions="End"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=NavigateToCollectionCommand}"
                                 CommandParameter="{Binding .}"
                                 VerticalOptions="Center"
                                 Margin="0,0,5,0" />
                         <Button Grid.Column="2"
+                                Text="Eksportuj"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=ExportCollectionCommand}"
+                                CommandParameter="{Binding .}"
+                                VerticalOptions="Center"
+                                Margin="0,0,5,0" />
+                        <Button Grid.Column="3"
                                 Text="Usuń"
-                                HorizontalOptions="End"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=DeleteCollectionCommand}"
                                 CommandParameter="{Binding .}"
                                 VerticalOptions="Center" />
@@ -44,5 +50,4 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
     </VerticalStackLayout>
-
 </ContentPage>

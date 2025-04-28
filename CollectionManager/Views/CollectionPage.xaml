@@ -13,7 +13,7 @@
 
     <ScrollView Padding="20">
         <VerticalStackLayout Spacing="15">
-            <Label Text="Dodaj nowy element"
+            <Label Text="{Binding IsEditing, Converter={StaticResource BoolToStringConverter}, ConverterParameter='Edytujesz element|Dodaj nowy element'}"
                    FontSize="Subtitle"
                    FontAttributes="Bold"
                    TextColor="#512BD4" />
@@ -31,19 +31,31 @@
 
             <Entry Placeholder="Zadowolenie (1-10)"
                    Keyboard="Numeric"
-                   Text="{Binding NewItemSatisfaction, Mode=TwoWay, StringFormat='{0}'}"/>
+                   Text="{Binding NewItemSatisfaction, Mode=TwoWay, StringFormat='{0}'}" />
 
             <Entry Placeholder="Komentarz"
                    Text="{Binding NewItemComment}"
                    HeightRequest="80" />
 
-            <Button Text="Dodaj element"
-                    Command="{Binding AddItemCommand}"
-                    TextColor="White"
-                    BackgroundColor="#512BD4"
-                    CornerRadius="5"
-                    Padding="10,5"
-                    FontSize="16" />
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="{Binding AddButtonText}"
+                        Command="{Binding AddItemCommand}"
+                        TextColor="White"
+                        BackgroundColor="#512BD4"
+                        CornerRadius="5"
+                        Padding="10,5"
+                        FontSize="16"
+                        HorizontalOptions="FillAndExpand" />
+                <Button Text="Anuluj"
+                        Command="{Binding CancelEditCommand}"
+                        TextColor="White"
+                        BackgroundColor="Red"
+                        CornerRadius="5"
+                        Padding="10,5"
+                        FontSize="16"
+                        IsVisible="{Binding IsEditing}"
+                        HorizontalOptions="End" />
+            </HorizontalStackLayout>
 
             <Label Text="Elementy kolekcji"
                    FontSize="Subtitle"
@@ -56,7 +68,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10"
-                              ColumnDefinitions="*,Auto,Auto">
+                              ColumnDefinitions="*,Auto,Auto,Auto">
                             <Frame Grid.Column="0"
                                    BackgroundColor="{Binding IsSold, Converter={StaticResource SoldItemColorConverter}}"
                                    Padding="15"
@@ -80,8 +92,16 @@
                                            TextColor="White" />
                                     <Label Text="{Binding Comment}"
                                            FontSize="12"
-                                           TextColor="DarkGray"/>
+                                           TextColor="DarkGray" />
                                     <Button Grid.Column="1"
+                                            Text="Edytuj"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CollectionViewModel}}, Path=EditItemCommand}"
+                                            CommandParameter="{Binding .}"
+                                            Style="{StaticResource ButtonStyle}"
+                                            Margin="5,0,0,0"
+                                            VerticalOptions="Center"
+                                            IsVisible="{Binding IsSold, Converter={StaticResource InverseBoolConverter}}" />
+                                    <Button Grid.Column="2"
                                             Text="Sprzedany"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CollectionViewModel}}, Path=MarkAsSoldCommand}"
                                             CommandParameter="{Binding .}"
@@ -89,7 +109,7 @@
                                             Margin="5,0,0,0"
                                             VerticalOptions="Center"
                                             IsVisible="{Binding IsSold, Converter={StaticResource InverseBoolConverter}}" />
-                                    <Button Grid.Column="2"
+                                    <Button Grid.Column="3"
                                             Text="Usuń"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:CollectionViewModel}}, Path=DeleteItemCommand}"
                                             CommandParameter="{Binding .}"

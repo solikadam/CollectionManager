@@ -1,6 +1,8 @@
 ﻿using CollectionManager.ViewModels;
 using CollectionManager.Views;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Storage;
+
 
 namespace CollectionManager
 {
